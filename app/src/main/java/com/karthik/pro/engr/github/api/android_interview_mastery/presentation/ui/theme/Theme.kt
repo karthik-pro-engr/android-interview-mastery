@@ -1,6 +1,5 @@
-package com.karthik.pro.engr.github.api.android_interview_mastery.ui.theme
+package com.karthik.pro.engr.github.api.android_interview_mastery.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

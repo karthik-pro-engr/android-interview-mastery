@@ -1,4 +1,4 @@
-package com.karthik.pro.engr.github.api.android_interview_mastery
+package com.karthik.pro.engr.github.api.android_interview_mastery.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.karthik.pro.engr.github.api.android_interview_mastery.ui.theme.AndroidinterviewmasteryTheme
+import com.karthik.pro.engr.github.api.android_interview_mastery.presentation.ui.theme.AndroidinterviewmasteryTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
