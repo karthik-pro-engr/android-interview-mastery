@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -39,6 +40,14 @@ interface GithubApi {
         @Path("repo") repoName: String,
         @Path("issue_number") number: String,
         @Body updateIssue: UpdateIssueRequest
+    ): Response<IssueDto>
+
+    @PATCH("repos/{owner}/{repo}/issues/{issue_number}")
+    suspend fun patchIssue(
+        @Path("owner") ownerName:String,
+        @Path("repo") repoName: String,
+        @Path("issue_number") issueNumber: String,
+        @Body updateIssue:UpdateIssueRequest
     ): Response<IssueDto>
 
 }
