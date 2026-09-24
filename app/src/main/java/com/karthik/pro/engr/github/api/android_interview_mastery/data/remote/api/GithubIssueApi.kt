@@ -91,5 +91,70 @@ interface GithubIssueApi {
         @Header("Authorization") authorization: String
     ): Response<Unit>
 
+    /*
+    * Production scenario
+
+Our GitHub issue screen needs two different behaviors.
+
+Scenario A — Get issue
+
+The UI only needs the successfully decoded issue:
+
+GET /repos/{owner}/{repo}/issues/{issue_number}
+
+If successful:
+
+{
+  "id": 123,
+  "number": 42,
+  "title": "Retrofit",
+  ...
+}
+
+The repository doesn't currently care about response headers or manually inspecting the HTTP status.
+
+So the API should expose the decoded model.
+    *
+    *
+    * */
+
+    @GET("repos/{owner}/{repo}/issues/{issue_number}")
+    suspend fun getIssueWithT(
+        @Path("owner") ownerName: String,
+        @Path("repo") repoName: String,
+        @Path("issue_number") issueNumber: String,
+        @Header("Authorization") authorization: String
+    ): IssueDto
+
+    /*
+    * Scenario B — Create issue
+POST /repos/{owner}/{repo}/issues
+
+The caller needs to know:
+
+Did the server return success?
+What HTTP status was returned?
+What issue was created?
+Potentially inspect response headers.
+
+So exposing only:
+
+IssueDto
+
+would lose useful HTTP-level information.
+
+We would use:
+
+Response<IssueDto>
+    *
+    *
+    * */
+
+    @POST("repos/{owner}/{repo}/issues")
+    suspend fun addIssue(
+        @Path("owner") ownerName: String,
+        @Path("repo") repoName: String,
+        @Header("Authorization") authorization: String
+    ): Response<IssueDto>
 
 }
