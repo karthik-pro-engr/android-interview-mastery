@@ -7,6 +7,7 @@ class GithubApiTest {
     @Test
     fun testGithubRepositories() = runBlocking {
         val response = RetrofitProvider.githubApi.repos(
+            username = "karthik-pro-engr",
             sort = "stars",
             order = "desc"
         )
