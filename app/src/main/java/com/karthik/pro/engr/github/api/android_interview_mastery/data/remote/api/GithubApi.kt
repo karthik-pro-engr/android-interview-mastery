@@ -6,6 +6,7 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.response.IssueDto
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -42,6 +43,7 @@ interface GithubApi {
         @Body updateIssue: UpdateIssueRequest
     ): Response<IssueDto>
 
+    // @PATCH "repos/{owner}/{repo}/issues/{issue_number}"
     @PATCH("repos/{owner}/{repo}/issues/{issue_number}")
     suspend fun patchIssue(
         @Path("owner") ownerName:String,
@@ -50,4 +52,11 @@ interface GithubApi {
         @Body updateIssue:UpdateIssueRequest
     ): Response<IssueDto>
 
+    // DELETE /repos/{owner}/{repo}/issues/{issue_number}
+    @DELETE("repos/{owner}/{repo}/issues/{issue_number}")
+    suspend fun deleteIssue(
+        @Path("owner") ownerName:String,
+        @Path("repo") repoName: String,
+        @Path("issue_number") issueNumber: String
+    ): Response<Unit>
 }
