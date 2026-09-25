@@ -9,4 +9,5 @@ object NotFound : AppError
 object RateLimited : AppError
 object ServerError : AppError
 object InvalidData : AppError
+object UnknownOperationOutcome : AppError
 object Unknown : AppError

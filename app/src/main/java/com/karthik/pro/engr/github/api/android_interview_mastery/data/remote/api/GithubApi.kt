@@ -31,6 +31,7 @@ interface GithubApi {
     suspend fun createIssue(
         @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
+        @Header("Idempotency-Key") idempotencyKey:String,
         @Body issue: CreateIssueRequest
     ): Response<IssueDto>
 
