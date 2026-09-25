@@ -8,13 +8,12 @@ object Forbidden : AppError
 object NotFound : AppError
 object RateLimited : AppError
 object ServerError : AppError
-object InvalidData : AppError
 
 data class SerializationError(
     val message: String? = null
 ) : AppError
 
-data class ApiError(
+data class InvalidRequest(
     val message: String
 ) : AppError
 
