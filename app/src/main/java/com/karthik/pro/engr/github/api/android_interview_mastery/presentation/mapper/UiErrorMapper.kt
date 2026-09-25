@@ -13,7 +13,7 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.U
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Unknown
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.UnknownOperationOutcome
 
-fun AppError.toUiMessage(): UiMessage =
+fun AppError.toUiErrorMessage(): UiMessage =
     when (this) {
         is InvalidRequest ->
             UiMessage("Please check the issue details.")
