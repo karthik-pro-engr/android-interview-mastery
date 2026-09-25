@@ -2,27 +2,31 @@ package com.karthik.pro.engr.github.api.android_interview_mastery.data.repositor
 
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.mapper.toDomain
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.mapper.toDto
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.NetworkErrorMapper
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.mapper.NetworkErrorMapper
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.GithubApi
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.error.GitHubErrorDto
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.CreateIssue
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.Issue
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.Repo
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.repository.GithubApiRepository
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.ApiError
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.AppResult
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Failure
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.InvalidData
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.NetworkUnavailable
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.SerializationError
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Success
-import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Unauthorized
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Unknown
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.UnknownOperationOutcome
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 import okio.IOException
 import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
 class GithubApiRepositoryImpl(
-    private val api: GithubApi
+    private val api: GithubApi,
+    private val json: Json
 ) : GithubApiRepository {
     override suspend fun getRepos(
         username: String,
@@ -40,7 +44,7 @@ class GithubApiRepositoryImpl(
         } catch (_: IOException) {
             Failure(NetworkUnavailable)
         } catch (_: SerializationException) {
-            Failure(InvalidData)
+            Failure(SerializationError())
         } catch (_: Exception) {
             Failure(Unknown)
         }
@@ -61,18 +65,29 @@ class GithubApiRepositoryImpl(
                 issue = issue.toDto()
             )
             if (response.isSuccessful) {
-                val body = response.body() ?: return Failure(InvalidData)
-                return Success(body.toDomain())
+                val body = response.body() ?: return Failure(SerializationError())
+                Success(body.toDomain())
+            } else {
+                val errorBody = response.errorBody() ?: return Failure(
+                    NetworkErrorMapper.mapError(
+                        response.code()
+                    )
+                )
+                try {
+                    val errorDto = json.decodeFromString<GitHubErrorDto>(errorBody.string())
+                    Failure(ApiError(errorDto.message))
+                } catch (_: SerializationException) {
+                    Failure(
+                        NetworkErrorMapper.mapError(response.code())
+                    )
+                }
             }
-            Failure(
-                NetworkErrorMapper.mapError(response.code())
-            )
         } catch (ex: CancellationException) {
             throw ex
         } catch (_: IOException) {
             Failure(UnknownOperationOutcome)
         } catch (_: SerializationException) {
-            Failure(InvalidData)
+            Failure(SerializationError())
         } catch (_: Exception) {
             Failure(Unknown)
         }

@@ -1,4 +1,4 @@
-package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote
+package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.mapper
 
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.AppError
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Forbidden
@@ -7,7 +7,6 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.R
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.ServerError
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Unauthorized
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Unknown
-
 
 object NetworkErrorMapper {
     fun mapError(code: Int): AppError = when (code) {

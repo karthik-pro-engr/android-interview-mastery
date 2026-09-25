@@ -9,5 +9,14 @@ object NotFound : AppError
 object RateLimited : AppError
 object ServerError : AppError
 object InvalidData : AppError
+
+data class SerializationError(
+    val message: String? = null
+) : AppError
+
+data class ApiError(
+    val message: String
+) : AppError
+
 object UnknownOperationOutcome : AppError
 object Unknown : AppError
