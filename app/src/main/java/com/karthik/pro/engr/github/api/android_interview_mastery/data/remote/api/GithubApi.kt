@@ -18,6 +18,15 @@ import retrofit2.http.Query
 
 interface GithubApi {
 
+
+
+    @GET("users/{username}/repos")
+    suspend fun reposAuthHeader(
+        @Path("username") username: String,
+        @Query("sort") sort: String,
+        @Query("order") order: String
+    ): List<GitHubRepoDto>
+
     @GET("users/{username}/repos")
     suspend fun repos(
         @Path("username") username: String,

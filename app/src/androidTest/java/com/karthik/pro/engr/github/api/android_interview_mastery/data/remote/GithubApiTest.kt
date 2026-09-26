@@ -7,11 +7,10 @@ import org.junit.Test
 class GithubApiTest {
     @Test
     fun testGithubRepositories() = runBlocking {
-        val response = RetrofitProvider.githubApi.repos(
+        val response = RetrofitProvider.githubApi.reposAuthHeader(
             username = "karthik-pro-engr",
             sort = "stars",
-            order = "desc",
-            authorization = "Bearer  ${BuildConfig.GITHUB_AIM_TOKEN}"
+            order = "desc"
         )
 
         println(response)
