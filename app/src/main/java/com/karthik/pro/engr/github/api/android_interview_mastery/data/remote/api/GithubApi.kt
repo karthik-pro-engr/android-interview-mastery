@@ -3,8 +3,10 @@ package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.ap
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.request.CreateIssueRequest
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.request.ReplaceIssueRequest
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.request.UpdateIssueRequest
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.response.auth.TokenCredentialsDto
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.response.GitHubRepoDto
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto.response.IssueDto
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,7 +19,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubApi {
-
 
 
     @GET("users/{username}/repos")
@@ -40,7 +41,7 @@ interface GithubApi {
     suspend fun createIssue(
         @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
-        @Header("Idempotency-Key") idempotencyKey:String,
+        @Header("Idempotency-Key") idempotencyKey: String,
         @Body issue: CreateIssueRequest
     ): Response<IssueDto>
 
@@ -57,17 +58,23 @@ interface GithubApi {
     // @PATCH "repos/{owner}/{repo}/issues/{issue_number}"
     @PATCH("repos/{owner}/{repo}/issues/{issue_number}")
     suspend fun patchIssue(
-        @Path("owner") ownerName:String,
+        @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
         @Path("issue_number") issueNumber: String,
-        @Body updateIssue:UpdateIssueRequest
+        @Body updateIssue: UpdateIssueRequest
     ): Response<IssueDto>
 
     // DELETE /repos/{owner}/{repo}/issues/{issue_number}
     @DELETE("repos/{owner}/{repo}/issues/{issue_number}")
     suspend fun deleteIssue(
-        @Path("owner") ownerName:String,
+        @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
         @Path("issue_number") issueNumber: String
     ): Response<Unit>
+
+    @POST("auth/refresh")
+    fun refreshToken(): Call<TokenCredentialsDto>
+
+    @POST("auth/refresh")
+    fun refreshTokenForAuth(): Call<TokenCredentialsDto>
 }
