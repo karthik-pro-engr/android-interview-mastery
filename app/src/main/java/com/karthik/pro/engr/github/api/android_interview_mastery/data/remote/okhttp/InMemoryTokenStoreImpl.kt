@@ -1,8 +1,9 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp
 
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStore
+import javax.inject.Inject
 
-class InMemoryTokenStore : TokenStore {
+class InMemoryTokenStoreImpl @Inject constructor() : TokenStore {
 
     private var accessToken: String? = null
     private var refreshToken: String? = null
