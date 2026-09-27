@@ -1,4 +1,4 @@
-package com.karthik.pro.engr.github.api.android_interview_mastery.ui.theme
+package com.karthik.pro.engr.github.api.android_interview_mastery.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
