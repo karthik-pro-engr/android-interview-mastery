@@ -4,6 +4,6 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.Tok
 
 object TokenProvider {
     val tokenStore: TokenStore by lazy {
-        InMemoryTokenStore()
+        InMemoryTokenStoreImpl()
     }
 }

@@ -8,9 +8,10 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import java.io.IOException
+import javax.inject.Inject
 
 
-class TokenAuthenticator(
+class TokenAuthenticator @Inject constructor(
     private val tokenStore: TokenStore,
     private val authApi: AuthApi
 ) : Authenticator {

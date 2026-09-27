@@ -21,9 +21,10 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import okio.IOException
 import retrofit2.HttpException
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-class GithubApiRepositoryImpl(
+class GithubApiRepositoryImpl @Inject constructor(
     private val api: GithubApi,
     private val json: Json
 ) : GithubApiRepository {
