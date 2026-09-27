@@ -69,5 +69,5 @@ class TokenAuthenticator(
 
     private fun buildRequest(response: Response, newToken: String): Request =
         response.request.newBuilder()
-            .addHeader(HttpHeaders.AUTHORIZATION, "Bearer $newToken").build()
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $newToken").build()
 }

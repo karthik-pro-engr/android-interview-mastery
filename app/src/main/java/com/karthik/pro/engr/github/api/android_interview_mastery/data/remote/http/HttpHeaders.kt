@@ -2,4 +2,6 @@ package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.ht
 
 object HttpHeaders {
     const val AUTHORIZATION = "Authorization"
+    const val COOKIE = "Cookie"
+
 }
