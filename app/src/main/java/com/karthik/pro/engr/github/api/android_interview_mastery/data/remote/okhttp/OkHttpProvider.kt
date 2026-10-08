@@ -56,7 +56,7 @@ object OkHttpProvider {
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .callTimeout(CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .authenticator(TokenAuthenticator(TokenProvider.tokenStore, RetrofitProvider.authApi))
+            .authenticator(TokenAuthenticator(TokenProvider.tokenStore, RetrofitProvider.dummyJsonApi))
             //.cache(createCache())
             .build()
     }

@@ -1,6 +1,6 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp
 
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.AuthApi
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.DummyJsonApi
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.http.HttpHeaders
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStore
 import okhttp3.Authenticator
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
     private val tokenStore: TokenStore,
-    private val authApi: AuthApi
+    private val dummyJsonApi: DummyJsonApi
 ) : Authenticator {
     private val lock = Any()
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -35,7 +35,7 @@ class TokenAuthenticator @Inject constructor(
                 if (requestAccessToken == localToken) {
 
                     val refreshResponse = try {
-                        authApi.refreshToken().execute()
+                        dummyJsonApi.refreshToken().execute()
                     } catch (_: IOException) {
                         return null
                     }

@@ -2,7 +2,7 @@ package com.karthik.pro.engr.github.api.android_interview_mastery.di
 
 import android.content.Context
 import com.karthik.pro.engr.github.api.android_interview_mastery.BuildConfig
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.AuthApi
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.DummyJsonApi
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.GithubApi
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.http.HttpHeaders
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp.AuthInterceptor
@@ -17,13 +17,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
 import okhttp3.Cache
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -32,6 +29,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     private const val BASE_URL = "https://api.github.com/"
+
+    private const val DUMMY_JSON_API = "https://dummyjson.com/"
     private const val CONNECT_TIMEOUT_SECONDS = 10L
     private const val WRITE_TIMEOUT_SECONDS = 30L
     private const val READ_TIMEOUT_SECONDS = 30L
@@ -83,8 +82,9 @@ object NetworkModule {
     @Provides
     @Singleton
     @RefreshClient
-    fun provideRefreshOkHttpClient(): OkHttpClient =
+    fun provideRefreshOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
         OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .build()
 
 
@@ -93,7 +93,7 @@ object NetworkModule {
     @RefreshRetrofit
     fun provideRefreshRetrofit(@RefreshClient okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(DUMMY_JSON_API)
             .client(okHttpClient)
             .addConverterFactory(
                 JsonProvider.converter()
@@ -101,8 +101,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthApi(@RefreshRetrofit retrofit: Retrofit): AuthApi =
-        retrofit.create(AuthApi::class.java)
+    fun provideDummyJsonApi(@RefreshRetrofit retrofit: Retrofit): DummyJsonApi =
+        retrofit.create(DummyJsonApi::class.java)
 
     @Provides
     @Singleton

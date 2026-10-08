@@ -1,6 +1,6 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote
 
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.AuthApi
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.DummyJsonApi
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.GithubApi
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp.OkHttpProvider
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.serialization.JsonProvider
@@ -35,7 +35,7 @@ object RetrofitProvider {
     val githubApi: GithubApi by lazy {
         retrofit.create(GithubApi::class.java)
     }
-    val authApi: AuthApi by lazy {
-        refreshRetrofit.create(AuthApi::class.java)
+    val dummyJsonApi: DummyJsonApi by lazy {
+        refreshRetrofit.create(DummyJsonApi::class.java)
     }
 }
