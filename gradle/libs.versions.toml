@@ -9,6 +9,8 @@ activityCompose = "1.13.0"
 kotlin = "2.4.20"
 composeBom = "2026.09.00"
 coroutines = "1.10.2"
+mockito = "5.20.0"
+mockitoKotlin = "6.1.0"
 
 # Retrofit
 retrofit = "3.0.0"
@@ -49,6 +51,11 @@ retrofit-kotlinx-serialization = {group = "com.squareup.retrofit2",name = "conve
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+
+# Testing
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
