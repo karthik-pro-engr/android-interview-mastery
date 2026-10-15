@@ -7,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.material3.MaterialTheme
 import com.karthik.pro.engr.github.api.android_interview_mastery.presentation.startup.StartupScreen
 import com.karthik.pro.engr.github.api.android_interview_mastery.presentation.startup.StartupViewModel
+import com.karthik.pro.engr.github.api.android_interview_mastery.presentation.ui.theme.AndroidinterviewmasteryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,12 +23,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val uiState by startupViewModel.uiState.collectAsState()
+            val state by startupViewModel.uiState.collectAsState()
 
-            MaterialTheme {
+            AndroidinterviewmasteryTheme {
                 StartupScreen(
-                    state = uiState,
-                    onRetry = startupViewModel::retry
+                    state = state,
+                    onLogin = startupViewModel::login,
+                    onRetry = startupViewModel::retry,
+                    onTestRefresh = startupViewModel::testRefreshFlow,
+                    onLogout = startupViewModel::logout
                 )
             }
         }

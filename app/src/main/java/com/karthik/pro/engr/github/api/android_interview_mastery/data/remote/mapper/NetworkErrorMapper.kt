@@ -2,6 +2,7 @@ package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.ma
 
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.AppError
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Forbidden
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.InvalidRequest
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.NotFound
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.RateLimited
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.ServerError
@@ -15,6 +16,9 @@ object NetworkErrorMapper {
         404 -> NotFound
         429 -> RateLimited
         in 500..599 -> ServerError
+        in 400..499 -> InvalidRequest(
+            message = "The server rejected the request (HTTP $code)."
+        )
         else -> Unknown
     }
 }
