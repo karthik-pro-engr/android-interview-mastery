@@ -8,15 +8,18 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.dto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface DummyJsonApi {
 
+    @Headers("X-Skip-Authorization: true")
     @POST("auth/login")
     suspend fun login(
         @Body loginRequestDto: LoginRequestDto
     ): Response<LoginResponseDto>
 
+    @Headers("X-Skip-Authorization: true")
     @POST("auth/refresh")
      fun refreshToken(
         @Body refreshTokenRequestDto: RefreshTokenRequestDto

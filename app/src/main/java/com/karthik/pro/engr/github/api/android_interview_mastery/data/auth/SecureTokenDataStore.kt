@@ -1,4 +1,3 @@
-
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.auth
 
 import android.content.Context
@@ -11,6 +10,7 @@ import com.karthik.pro.engr.github.api.android_interview_mastery.data.security.E
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.security.MissingEncryptionKeyException
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.security.AndroidKeystoreKeyManager
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStore
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStoreInitializer
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.auth.TokenPair
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +19,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.io.IOException
-import java.security.GeneralSecurityException
 import javax.crypto.AEADBadTagException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,7 +38,7 @@ class SecureTokenStoreImpl @Inject constructor(
     @ApplicationContext context: Context,
     private val encryptor: AesGcmEncryptor,
     private val keyManager: AndroidKeystoreKeyManager
-) : TokenStore {
+) : TokenStore, TokenStoreInitializer {
 
     private val dataStore = context.secureTokenDataStore
 
@@ -62,7 +60,8 @@ class SecureTokenStoreImpl @Inject constructor(
     /**
      * Call and await this before starting authenticated requests.
      */
-    suspend fun initialize() {
+
+    override suspend fun initialize() {
         check(!initialized) {
             "TokenStore has already been initialized"
         }
@@ -135,7 +134,7 @@ class SecureTokenStoreImpl @Inject constructor(
 
         require(
             tokenPair.accessToken.isNotBlank() &&
-                tokenPair.refreshToken.isNotBlank()
+                    tokenPair.refreshToken.isNotBlank()
         ) {
             "Tokens must not be blank"
         }
