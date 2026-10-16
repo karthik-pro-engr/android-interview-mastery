@@ -1,74 +1,84 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp
 
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.api.AuthApi
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.http.HttpHeaders
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStore
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.TokenCredentials
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.auth.TokenPair
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.repository.AuthRepository
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Failure
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.result.Success
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 class TokenAuthenticator @Inject constructor(
     private val tokenStore: TokenStore,
-    private val authApi: AuthApi
+    private val authRepository: AuthRepository
 ) : Authenticator {
+
     private val lock = Any()
-    override fun authenticate(route: Route?, response: Response): Request? {
 
-        if (response.priorResponse != null) {
-            return null
+    override fun authenticate(
+        route: Route?,
+        response: Response
+    ): Request? {
+
+        // Do not retry an already retried request indefinitely.
+        if (response.priorResponse != null) return null
+
+        val requestAccessToken = response.request
+            .header("Authorization")
+            ?.takeIf { it.startsWith("Bearer ") }
+            ?.removePrefix("Bearer ")
+            ?.takeIf { it.isNotBlank() }
+            ?: return null
+
+        val currentAccessToken =
+            tokenStore.getAccessToken() ?: return null
+
+        // Another request already refreshed the access token.
+        if (requestAccessToken != currentAccessToken) {
+            return buildRequest(response, currentAccessToken)
         }
 
-        val requestAccessToken =
-            response.request.header("Authorization")?.removePrefix("Bearer ") ?: return null
+        synchronized(lock) {
+            // Recheck after acquiring the lock.
+            val latestAccessToken =
+                tokenStore.getAccessToken() ?: return null
 
-        val currentAccessToken = tokenStore.getAccessToken() ?: return null
-
-
-
-        if (requestAccessToken == currentAccessToken) {
-            synchronized(lock) {
-                val localToken = tokenStore.getAccessToken() ?: return null
-                if (requestAccessToken == localToken) {
-
-                    val refreshResponse = try {
-                        authApi.refreshToken().execute()
-                    } catch (_: IOException) {
-                        return null
-                    }
-
-                    if (refreshResponse.isSuccessful) {
-
-                        val tokenCredentialsDto = refreshResponse.body() ?: return null
-
-                        tokenStore.saveTokens(
-                            tokenCredentialsDto.accessToken,
-                            tokenCredentialsDto.refreshToken
-                        )
-
-                        val newToken = tokenStore.getAccessToken() ?: return null
-
-                        return buildRequest(response, newToken)
-                    } else {
-                        return null
-                    }
-
-                } else {
-                    val newToken = tokenStore.getAccessToken() ?: return null
-                    return buildRequest(response, newToken)
-                }
+            if (requestAccessToken != latestAccessToken) {
+                return buildRequest(response, latestAccessToken)
             }
-        } else {
-            val newToken = tokenStore.getAccessToken() ?: return null
-            return buildRequest(response, newToken)
-        }
 
+            val refreshToken =
+                tokenStore.getRefreshToken() ?: return null
+
+            val credentials = when (
+                val result = authRepository.refreshToken(refreshToken)
+            ) {
+                is Success -> result.data
+                is Failure -> return null
+            }
+
+            tokenStore.saveTokens(
+                TokenPair(
+                    accessToken = credentials.accessToken,
+                    refreshToken = credentials.refreshToken
+                )
+            )
+
+            return buildRequest(response, credentials.accessToken)
+        }
     }
 
-    private fun buildRequest(response: Response, newToken: String): Request =
+    private fun buildRequest(
+        response: Response,
+        accessToken: String
+    ): Request =
         response.request.newBuilder()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $newToken").build()
+            .header("Authorization", "Bearer $accessToken")
+            .build()
 }

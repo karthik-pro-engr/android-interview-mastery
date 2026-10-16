@@ -1,14 +1,15 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.di
 
-import com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.serialization.JsonProvider
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.repository.AuthRepositoryImpl
+import com.karthik.pro.engr.github.api.android_interview_mastery.data.repository.DummyJsonSessionRepositoryImpl
 import com.karthik.pro.engr.github.api.android_interview_mastery.data.repository.GithubApiRepositoryImpl
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.repository.AuthRepository
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.repository.DummyJsonSessionRepository
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.repository.GithubApiRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -16,5 +17,19 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun bindGithubRepository(githubRepository: GithubApiRepositoryImpl): GithubApiRepository
+    abstract fun bindGithubRepository(
+        implementation: GithubApiRepositoryImpl
+    ): GithubApiRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        implementation: AuthRepositoryImpl
+    ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDummyJsonSessionRepository(
+        implementation: DummyJsonSessionRepositoryImpl
+    ): DummyJsonSessionRepository
 }

@@ -1,9 +1,11 @@
 package com.karthik.pro.engr.github.api.android_interview_mastery.data.remote.okhttp
 
 import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStore
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.auth.TokenStoreInitializer
+import com.karthik.pro.engr.github.api.android_interview_mastery.domain.model.auth.TokenPair
 import javax.inject.Inject
 
-class InMemoryTokenStoreImpl @Inject constructor() : TokenStore {
+class InMemoryTokenStoreImpl @Inject constructor() : TokenStore, TokenStoreInitializer {
 
     private var accessToken: String? = null
     private var refreshToken: String? = null
@@ -13,15 +15,18 @@ class InMemoryTokenStoreImpl @Inject constructor() : TokenStore {
     override fun getRefreshToken(): String? = refreshToken
 
     override fun saveTokens(
-        accessToken: String,
-        refreshToken: String
+        tokenPair: TokenPair
     ) {
-        this.accessToken = accessToken
-        this.refreshToken = refreshToken
+        this.accessToken = tokenPair.accessToken
+        this.refreshToken = tokenPair.refreshToken
     }
 
     override fun clearTokens() {
         accessToken = null
         refreshToken = null
+    }
+
+    override suspend fun initialize() {
+
     }
 }
